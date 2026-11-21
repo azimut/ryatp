@@ -16,8 +16,7 @@ LiquidCrystal_I2C lcd(0x20,16,2);
 
 int codigo[4]  = { 3, 7, 1, 9}; // codigo objetivo
 int ingreso[4] = {-1,-1,-1,-1}; // codigo ingresado
-int intentos
-= 0; // cantidad de intentos hechos
+int intentos = 0; // cantidad de intentos hechos
 
 void setup()
 {
@@ -65,8 +64,9 @@ void encenderLedVerde() { digitalWrite(LVER, HIGH); }
 void apagarLedRojo()    { digitalWrite(LROJ, LOW); }
 void apagarLedVerde()   { digitalWrite(LVER, LOW); }
 
-void mostrar(String msg) {
+void mostrar(String msg, int offset = 0) {
   lcd.clear();
+  lcd.setCursor(offset, 0);
   lcd.print(msg);
 }
 
@@ -95,28 +95,31 @@ bool pulsadorDeCerrado() {
 void loop()
 {
   // ETAPA 1 - Despertar el sistema
-  mostrar("Acerca la mano");
+  mostrar("Acerca la mano", 1);
   float distancia;
   do {
     apagarLedRojo();
     distancia = leerDistancia();
   } while(distancia > 15);
-  mostrar("Ingresa codigo:");
+  mostrar("Ingresa codigo:", 1);
 
   // ETAPA 2 - La perilla
   // ETAPA 3 - Ingresar la combinacion
+  int voffset = 6; // offset horizontal de combinacion
+  lcd.setCursor(voffset,1);
+  lcd.print("----");
   for (int digito = 0; digito < 4; digito++) {
     bool confirmado = false;
     while (!confirmado) {
       lcd.noBlink(); // evitar parpadear fuera del digito
-      lcd.setCursor(digito,1);
+      lcd.setCursor(voffset+digito,1);
       lcd.print(leerDigito());
-      lcd.setCursor(digito,1);
+      lcd.setCursor(voffset+digito,1);
       lcd.blink();
       confirmado = pulsadorDeConfirmacion();
     }
     ingreso[digito] = leerDigito();
-    lcd.setCursor(digito,1);
+    lcd.setCursor(voffset+digito,1);
     lcd.print("*");
   }
   lcd.noBlink();
@@ -125,7 +128,7 @@ void loop()
   // ETAPA 4 - Verificar y abrir
   if (esCodigoCorrecto()) {
     encenderLedVerde();
-    mostrar("Abierto");
+    mostrar("Abierto", 4);
     abrirCaja();
     // ETAPA 6 - Volver a cerrar
     while (!pulsadorDeCerrado()) { }
@@ -134,15 +137,16 @@ void loop()
     apagarLedVerde();
   } else {
     encenderLedRojo();
-    mostrar("Incorecto");
+    mostrar("Incorecto", 3);
     // ETAPA 5 - Tres intentos y bloqueo
     intentos++;
     lcd.print(" ");
     lcd.print(intentos);
+    delay(2000); // Dejar leer el msg
     if (intentos == 3) {
-      mostrar("Bloqueado: ");
+      mostrar("Bloqueado: ", 2);
       for (int i = 10; i > 0; i--) {
-        lcd.setCursor(strlen("Bloqueado: "), 0);
+        lcd.setCursor(strlen("Bloqueado: ") + 2, 0);
         lcd.print(i);
         lcd.print(" "); // HACK para limpiar un cuadrado
         delay(1000);

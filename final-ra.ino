@@ -16,7 +16,8 @@ LiquidCrystal_I2C lcd(0x20,16,2);
 
 int codigo[4]  = { 3, 7, 1, 9}; // codigo objetivo
 int ingreso[4] = {-1,-1,-1,-1}; // codigo ingresado
-int intentos = 3; // cantidad de intentos restantes
+int intentos
+= 0; // cantidad de intentos hechos
 
 void setup()
 {
@@ -91,22 +92,15 @@ bool pulsadorDeCerrado() {
   return estado;
 }
 
-void reset() {
-  digitalWrite(LROJ, LOW);
-  digitalWrite(LVER, LOW);
-  lcd.clear();
-  servo.write(0);
-}
-
 void loop()
 {
   // ETAPA 1 - Despertar el sistema
   mostrar("Acerca la mano");
-  float distancia = 9999;
-  while(distancia > 15) {
+  float distancia;
+  do {
     apagarLedRojo();
     distancia = leerDistancia();
-  }
+  } while(distancia > 15);
   mostrar("Ingresa codigo:");
 
   // ETAPA 2 - La perilla
@@ -126,26 +120,37 @@ void loop()
     lcd.print("*");
   }
   lcd.noBlink();
-  delay(3000); // FIXME
+  delay(1000); // Pensando...
 
   // ETAPA 4 - Verificar y abrir
   if (esCodigoCorrecto()) {
     encenderLedVerde();
-    abrirCaja();
     mostrar("Abierto");
+    abrirCaja();
+    // ETAPA 6 - Volver a cerrar
+    while (!pulsadorDeCerrado()) { }
+    cerrarCaja();
+    apagarLedRojo();
+    apagarLedVerde();
   } else {
     encenderLedRojo();
     mostrar("Incorecto");
-    // TODO: retry
+    // ETAPA 5 - Tres intentos y bloqueo
+    intentos++;
+    lcd.print(" ");
+    lcd.print(intentos);
+    if (intentos == 3) {
+      mostrar("Bloqueado: ");
+      for (int i = 10; i > 0; i--) {
+        lcd.setCursor(strlen("Bloqueado: "), 0);
+        lcd.print(i);
+        lcd.print(" "); // HACK para limpiar un cuadrado
+        delay(1000);
+      }
+      intentos = 0;
+    }
   }
-  // ETAPA 5 - Tres intentos y bloqueo
 
-
-  // ETAPA 6 - Volver a cerrar
-  while (!pulsadorDeCerrado()) { }
-  cerrarCaja();
-  apagarLedRojo();
-  apagarLedVerde();
   // ETAPA ? - Cambiar la combinacion
   // ETAPA # - Registro de intentos
   // ETAPA ! - Contraseña con pista

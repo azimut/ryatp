@@ -76,9 +76,9 @@ void respirarLedRojo() { // (255 + 255) * 2 = 1020ms
   }
 }
 
-void mostrar(String msg, int offset = 0) {
+void mostrar(String msg) {
   lcd.clear();
-  lcd.setCursor(offset, 0);
+  lcd.setCursor((16/2)-(msg.length()/2), 0);
   lcd.print(msg);
 }
 
@@ -109,11 +109,11 @@ void loop()
   // ETAPA 1 - Despertar el sistema
   float distancia = leerDistancia();
   while(distancia > 15) {
-    mostrar("Acerca la mano", 1);
+    mostrar("Acerca la mano");
     apagarLedRojo();
     distancia = leerDistancia();
   }
-  mostrar("Ingresa codigo:", 1);
+  mostrar("Ingresa codigo:");
 
   // ETAPA 2 - La perilla
   // ETAPA 3 - Ingresar la combinacion
@@ -140,7 +140,7 @@ void loop()
   // ETAPA 4 - Verificar y abrir
   if (esCodigoCorrecto()) {
     encenderLedVerde();
-    mostrar("Abierto", 4);
+    mostrar("Abierto");
     abrirCaja();
     // ETAPA 6 - Volver a cerrar
     while (!pulsadorDeCerrado()) { }
@@ -150,16 +150,17 @@ void loop()
     intentos = 0; // contar solo reintentos consecutivos
   } else {
     encenderLedRojo();
-    mostrar("Incorrecto", 2);
+    mostrar("Incorrecto");
     // ETAPA 5 - Tres intentos y bloqueo
     intentos++;
+    lcd.setCursor(7,1);
     lcd.print(" ");
     lcd.print(intentos);
     delay(2000); // Dejar leer el msg
     if (intentos == 3) {
-      mostrar("Bloqueado: ", 2);
+      mostrar("Bloqueado: ");
       for (int i = 10; i > 0; i--) {
-        lcd.setCursor(strlen("Bloqueado: ") + 2, 0);
+        lcd.setCursor(7, 1);
         lcd.print(i);
         lcd.print(" "); // HACK para limpiar un cuadrado
         respirarLedRojo();

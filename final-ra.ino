@@ -1,32 +1,34 @@
 #include <Servo.h>
 #include <LiquidCrystal_I2C.h>
 
+// PINES
 #define LROJ   3
 #define LVER   2
-#define ECHO   6
+#define SERVO 11
 #define TRIG   7
+#define ECHO   6
+#define POTE  A0
 #define PUL1  10
 #define PUL2   9
-#define SERVO 11
-#define POTE  A0
 
 Servo servo;
 LiquidCrystal_I2C lcd(0x20,16,2);
 
-int codigo[4]  = { 3, 7, 1, 9};
-int ingreso[4] = {-1,-1,-1,-1};
+int codigo[4]  = { 3, 7, 1, 9}; // codigo objetivo
+int ingreso[4] = {-1,-1,-1,-1}; // codigo ingresado
+int intentos = 3; // cantidad de intentos restantes
 
 void setup()
 {
   Serial.begin(9600);
-  pinMode(LROJ, OUTPUT);
-  pinMode(LVER, OUTPUT);
-  pinMode(POTE, INPUT);
-  pinMode(ECHO, INPUT);
-  pinMode(TRIG, OUTPUT);
+  pinMode(LROJ , OUTPUT);
+  pinMode(LVER , OUTPUT);
   pinMode(SERVO, OUTPUT);
-  pinMode(PUL1, INPUT);
-  pinMode(PUL2, INPUT);
+  pinMode(TRIG , OUTPUT);
+  pinMode(ECHO , INPUT);
+  pinMode(POTE , INPUT);
+  pinMode(PUL1 , INPUT);
+  pinMode(PUL2 , INPUT);
   lcd.init();
   lcd.backlight();
   servo.attach(SERVO);
@@ -57,12 +59,10 @@ bool esCodigoCorrecto() {
   return true;
 }
 
-void encenderLedRojo() {
-  digitalWrite(LROJ, HIGH);
-}
-void encenderLedVerde() {
-  digitalWrite(LVER, HIGH);
-}
+void encenderLedRojo()  { digitalWrite(LROJ, HIGH); }
+void encenderLedVerde() { digitalWrite(LVER, HIGH); }
+void apagarLedRojo()    { digitalWrite(LROJ, LOW); }
+void apagarLedVerde()   { digitalWrite(LVER, LOW); }
 
 void mostrar(String msg) {
   lcd.clear();
@@ -70,22 +70,25 @@ void mostrar(String msg) {
 }
 
 void cerrarCaja() {
-  for (int i = 90; i < 0; i--) {
+  for (int i = 90; i > 0; i--) {
     servo.write(i);
   }
 }
-
 void abrirCaja() {
   for (int i = 0; i < 90; i++) {
     servo.write(i);
   }
 }
 
-bool pulsadorConfirmar() {
-  return digitalRead(PUL1);
+bool pulsadorDeConfirmacion() {
+  bool estado = digitalRead(PUL1) == HIGH;
+  while (digitalRead(PUL1)) {} // Esperar release
+  return estado;
 }
-bool pulsadorCerrado() {
-  return digitalRead(PUL2);
+bool pulsadorDeCerrado() {
+  bool estado = digitalRead(PUL2) == HIGH;
+  while (digitalRead(PUL2)) {} // Esperar release
+  return estado;
 }
 
 void reset() {
@@ -98,10 +101,10 @@ void reset() {
 void loop()
 {
   // ETAPA 1 - Despertar el sistema
-  reset();
   mostrar("Acerca la mano");
   float distancia = 9999;
   while(distancia > 15) {
+    apagarLedRojo();
     distancia = leerDistancia();
   }
   mostrar("Ingresa codigo:");
@@ -116,8 +119,7 @@ void loop()
       lcd.print(leerDigito());
       lcd.setCursor(digito,1);
       lcd.blink();
-      confirmado = pulsadorConfirmar();
-      while(pulsadorConfirmar()) {} // esperar release...
+      confirmado = pulsadorDeConfirmacion();
     }
     ingreso[digito] = leerDigito();
     lcd.setCursor(digito,1);
@@ -125,6 +127,7 @@ void loop()
   }
   lcd.noBlink();
   delay(3000); // FIXME
+
   // ETAPA 4 - Verificar y abrir
   if (esCodigoCorrecto()) {
     encenderLedVerde();
@@ -139,9 +142,10 @@ void loop()
 
 
   // ETAPA 6 - Volver a cerrar
-  while (!pulsadorCerrado()) { }
+  while (!pulsadorDeCerrado()) { }
   cerrarCaja();
-  reset();
+  apagarLedRojo();
+  apagarLedVerde();
   // ETAPA ? - Cambiar la combinacion
   // ETAPA # - Registro de intentos
   // ETAPA ! - Contraseña con pista

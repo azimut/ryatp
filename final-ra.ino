@@ -1,43 +1,41 @@
-#include <Servo.h>
 #include <LiquidCrystal_I2C.h>
+#include <Servo.h>
 
-// PINES
-#define LROJ   3
-#define LVER   2
+#define HOFFSET 6 /* offset horizontal en el lcd, para la combinacion */
+
+#define LROJ 3
+#define LVER 2
 #define SERVO 11
-#define TRIG   7
-#define ECHO   6
-#define POTE  A0
-#define PUL1  10
-#define PUL2   9
+#define TRIG 7
+#define ECHO 6
+#define POTE A0
+#define PUL1 10
+#define PUL2 9
 
 Servo servo;
-LiquidCrystal_I2C lcd(0x20,16,2);
+LiquidCrystal_I2C lcd(0x20, 16, 2);
 
-int codigo[4]  = { 3, 7, 1, 9}; // codigo objetivo
-int ingreso[4] = {-1,-1,-1,-1}; // codigo ingresado
-int intentos = 0; // cantidad de intentos hechos
+int codigo[4] = {3, 7, 1, 9};      // codigo objetivo
+int ingreso[4] = {-1, -1, -1, -1}; // codigo ingresado
+int intentos = 0;                  // cantidad de intentos hechos
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
-  pinMode(LROJ , OUTPUT);
-  pinMode(LVER , OUTPUT);
+  pinMode(LROJ, OUTPUT);
+  pinMode(LVER, OUTPUT);
   pinMode(SERVO, OUTPUT);
-  pinMode(TRIG , OUTPUT);
-  pinMode(ECHO , INPUT);
-  pinMode(POTE , INPUT);
-  pinMode(PUL1 , INPUT);
-  pinMode(PUL2 , INPUT);
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
+  pinMode(POTE, INPUT);
+  pinMode(PUL1, INPUT);
+  pinMode(PUL2, INPUT);
   lcd.init();
   lcd.backlight();
   servo.attach(SERVO);
   servo.write(0);
 }
 
-int leerDigito() {
-  return map(analogRead(POTE), 0, 1023, 0, 9);
-}
+int leerDigito() { return map(analogRead(POTE), 0, 1023, 0, 9); }
 
 float leerDistancia() {
   digitalWrite(TRIG, LOW);
@@ -51,8 +49,8 @@ float leerDistancia() {
 }
 
 bool esCodigoCorrecto() {
-  for(int i = 0; i < 4; i++) {
-    if(codigo[i] != ingreso[i]) {
+  for (int i = 0; i < 4; i++) {
+    if (codigo[i] != ingreso[i]) {
       return false;
     }
   }
@@ -78,7 +76,7 @@ void respirarLedRojo() { // (255 + 255) * 2 = 1020ms
 
 void mostrar(String msg) {
   lcd.clear();
-  lcd.setCursor((16/2)-(msg.length()/2), 0);
+  lcd.setCursor((16 / 2) - (msg.length() / 2), 0);
   lcd.print(msg);
 }
 
@@ -95,43 +93,41 @@ void abrirCaja() {
 
 bool pulsadorDeConfirmacion() {
   bool estado = digitalRead(PUL1) == HIGH;
-  while (digitalRead(PUL1)) {} // Esperar release
+  while (digitalRead(PUL1)) { } // Esperar release
   return estado;
 }
 bool pulsadorDeCerrado() {
   bool estado = digitalRead(PUL2) == HIGH;
-  while (digitalRead(PUL2)) {} // Esperar release
+  while (digitalRead(PUL2)) { } // Esperar release
   return estado;
 }
 
-void loop()
-{
+void loop() {
   // ETAPA 1 - Despertar el sistema
   float distancia = leerDistancia();
-  while(distancia > 15) {
+  while (distancia > 15) {
     mostrar("Acerca la mano");
     apagarLedRojo();
     distancia = leerDistancia();
   }
   mostrar("Ingresa codigo:");
+  lcd.setCursor(HOFFSET, 1);
+  lcd.print("----");
 
   // ETAPA 2 - La perilla
   // ETAPA 3 - Ingresar la combinacion
-  int hoffset = 6; // offset horizontal en el lcd, para la combinacion
-  lcd.setCursor(hoffset,1);
-  lcd.print("----");
   for (int digito = 0; digito < 4; digito++) {
     bool confirmado = false;
     while (!confirmado) {
       lcd.noBlink(); // evitar parpadear fuera del digito
-      lcd.setCursor(hoffset+digito,1);
+      lcd.setCursor(HOFFSET + digito, 1);
       lcd.print(leerDigito());
-      lcd.setCursor(hoffset+digito,1);
+      lcd.setCursor(HOFFSET + digito, 1);
       lcd.blink();
       confirmado = pulsadorDeConfirmacion();
     }
     ingreso[digito] = leerDigito();
-    lcd.setCursor(hoffset+digito,1);
+    lcd.setCursor(HOFFSET + digito, 1);
     lcd.print("*");
   }
   lcd.noBlink();
@@ -153,7 +149,7 @@ void loop()
     mostrar("Incorrecto");
     // ETAPA 5 - Tres intentos y bloqueo
     intentos++;
-    lcd.setCursor(7,1);
+    lcd.setCursor(7, 1);
     lcd.print(" ");
     lcd.print(intentos);
     delay(2000); // Dejar leer el msg

@@ -135,6 +135,7 @@ void loop()
     cerrarCaja();
     apagarLedRojo();
     apagarLedVerde();
+    intentos = 0; // Los reinteintos son consecutivos
   } else {
     encenderLedRojo();
     mostrar("Incorrecto", 2);

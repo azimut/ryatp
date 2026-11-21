@@ -127,7 +127,6 @@ void loop() {
       confirmado = pulsadorDeConfirmacion();
     }
     ingreso[digito] = leerDigito();
-    lcd.setCursor(HOFFSET + digito, 1);
     lcd.print("*");
   }
   lcd.noBlink();

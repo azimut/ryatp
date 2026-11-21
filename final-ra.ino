@@ -48,6 +48,30 @@ float leerDistancia() {
   return distancia;
 }
 
+void actualizarCodigo() {
+  mostrar("Nuevo Codigo:");
+  lcd.setCursor(HOFFSET, 1);
+  lcd.print("----");
+  for (int digito = 0; digito < 4; digito++) {
+    bool confirmado = false;
+    while (!confirmado) {
+      lcd.noBlink(); // evitar parpadear fuera del digito
+      lcd.setCursor(HOFFSET + digito, 1);
+      lcd.print(leerDigito());
+      lcd.setCursor(HOFFSET + digito, 1);
+      lcd.blink();
+      confirmado = pulsadorDeConfirmacion();
+      while (pulsadorDeConfirmacion()) { } // hasta que se suelte
+    }
+    codigo[digito] = leerDigito();
+    lcd.print("*");
+  }
+  lcd.noBlink();
+  delay(1000); // Pensando...
+  mostrar("OK!");
+  delay(1000); // Pensando...
+}
+
 bool esCodigoCorrecto() {
   for (int i = 0; i < 4; i++) {
     if (codigo[i] != ingreso[i]) {
@@ -91,16 +115,8 @@ void abrirCaja() {
   }
 }
 
-bool pulsadorDeConfirmacion() {
-  bool estado = digitalRead(PUL1) == HIGH;
-  while (digitalRead(PUL1)) { } // Esperar release
-  return estado;
-}
-bool pulsadorDeCerrado() {
-  bool estado = digitalRead(PUL2) == HIGH;
-  while (digitalRead(PUL2)) { } // Esperar release
-  return estado;
-}
+bool pulsadorDeConfirmacion() { return digitalRead(PUL1); }
+bool pulsadorDeCerrado() { return digitalRead(PUL2); }
 
 void loop() {
   // ETAPA 1 - Despertar el sistema
@@ -125,6 +141,7 @@ void loop() {
       lcd.setCursor(HOFFSET + digito, 1);
       lcd.blink();
       confirmado = pulsadorDeConfirmacion();
+      while (pulsadorDeConfirmacion()) { } // hasta que se suelte
     }
     ingreso[digito] = leerDigito();
     lcd.print("*");
@@ -138,11 +155,18 @@ void loop() {
     mostrar("Abierto");
     abrirCaja();
     // ETAPA 6 - Volver a cerrar
-    while (!pulsadorDeCerrado()) { }
-    cerrarCaja();
-    apagarLedRojo();
-    apagarLedVerde();
-    intentos = 0; // contar solo reintentos consecutivos
+    // ETAPA 7 - Cambiar la combinacion
+    while (!pulsadorDeCerrado()) { } // esperar hasta que se precione
+    if (pulsadorDeCerrado() && pulsadorDeConfirmacion()) {
+      while (pulsadorDeCerrado() || pulsadorDeConfirmacion()) { }
+      actualizarCodigo();
+    } else {
+      while (pulsadorDeCerrado()) { } // esperar que se suelte
+      cerrarCaja();
+      apagarLedRojo();
+      apagarLedVerde();
+      intentos = 0; // contar solo reintentos consecutivos
+    }
   } else {
     encenderLedRojo();
     mostrar("Incorrecto");
@@ -163,8 +187,4 @@ void loop() {
       intentos = 0;
     }
   }
-
-  // ETAPA ? - Cambiar la combinacion
-  // ETAPA # - Registro de intentos
-  // ETAPA ! - Contraseña con pista
 }

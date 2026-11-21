@@ -70,6 +70,7 @@ void actualizarCodigo() {
   delay(1000); // Pensando...
   mostrar("OK!");
   delay(1000); // Pensando...
+  mostrar("Abierto");
 }
 
 bool esCodigoCorrecto() {
@@ -157,11 +158,15 @@ void loop() {
     // ETAPA 6 - Volver a cerrar
     // ETAPA 7 - Cambiar la combinacion
     while (!pulsadorDeCerrado()) { } // esperar hasta que se precione
-    if (pulsadorDeCerrado() && pulsadorDeConfirmacion()) {
+    if (pulsadorDeConfirmacion()) {
       while (pulsadorDeCerrado() || pulsadorDeConfirmacion()) { }
       actualizarCodigo();
+      cerrarCaja();
+      apagarLedRojo();
+      apagarLedVerde();
+      intentos = 0; // contar solo reintentos consecutivos
     } else {
-      while (pulsadorDeCerrado()) { } // esperar que se suelte
+      while (pulsadorDeCerrado()) { }
       cerrarCaja();
       apagarLedRojo();
       apagarLedVerde();

@@ -149,9 +149,9 @@ void loop() {
     mostrar("Incorrecto");
     // ETAPA 5 - Tres intentos y bloqueo
     intentos++;
-    lcd.setCursor(7, 1);
-    lcd.print(" ");
+    lcd.setCursor(6, 1);
     lcd.print(intentos);
+    lcd.print("/3");
     delay(2000); // Dejar leer el msg
     if (intentos == 3) {
       mostrar("Bloqueado: ");

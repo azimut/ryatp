@@ -95,12 +95,12 @@ bool pulsadorDeCerrado() {
 void loop()
 {
   // ETAPA 1 - Despertar el sistema
-  mostrar("Acerca la mano", 1);
-  float distancia;
-  do {
+  float distancia = 9999;
+  while(distancia > 15) {
+    mostrar("Acerca la mano", 1);
     apagarLedRojo();
     distancia = leerDistancia();
-  } while(distancia > 15);
+  }
   mostrar("Ingresa codigo:", 1);
 
   // ETAPA 2 - La perilla
@@ -137,7 +137,7 @@ void loop()
     apagarLedVerde();
   } else {
     encenderLedRojo();
-    mostrar("Incorecto", 3);
+    mostrar("Incorrecto", 2);
     // ETAPA 5 - Tres intentos y bloqueo
     intentos++;
     lcd.print(" ");

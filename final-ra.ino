@@ -117,21 +117,21 @@ void loop()
 
   // ETAPA 2 - La perilla
   // ETAPA 3 - Ingresar la combinacion
-  int voffset = 6; // offset horizontal de combinacion
-  lcd.setCursor(voffset,1);
+  int hoffset = 6; // offset horizontal en el lcd, para la combinacion
+  lcd.setCursor(hoffset,1);
   lcd.print("----");
   for (int digito = 0; digito < 4; digito++) {
     bool confirmado = false;
     while (!confirmado) {
       lcd.noBlink(); // evitar parpadear fuera del digito
-      lcd.setCursor(voffset+digito,1);
+      lcd.setCursor(hoffset+digito,1);
       lcd.print(leerDigito());
-      lcd.setCursor(voffset+digito,1);
+      lcd.setCursor(hoffset+digito,1);
       lcd.blink();
       confirmado = pulsadorDeConfirmacion();
     }
     ingreso[digito] = leerDigito();
-    lcd.setCursor(voffset+digito,1);
+    lcd.setCursor(hoffset+digito,1);
     lcd.print("*");
   }
   lcd.noBlink();
@@ -147,7 +147,7 @@ void loop()
     cerrarCaja();
     apagarLedRojo();
     apagarLedVerde();
-    intentos = 0; // Los reinteintos son consecutivos
+    intentos = 0; // contar solo reintentos consecutivos
   } else {
     encenderLedRojo();
     mostrar("Incorrecto", 2);

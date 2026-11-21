@@ -63,6 +63,18 @@ void encenderLedRojo()  { digitalWrite(LROJ, HIGH); }
 void encenderLedVerde() { digitalWrite(LVER, HIGH); }
 void apagarLedRojo()    { digitalWrite(LROJ, LOW); }
 void apagarLedVerde()   { digitalWrite(LVER, LOW); }
+void respirarLedRojo() { // (255 + 255) * 2 = 1020ms
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 255; j++) {
+      analogWrite(LROJ, j);
+      delay(1);
+    }
+    for (int j = 255; j >= 0; j--) {
+      analogWrite(LROJ, j);
+      delay(1);
+    }
+  }
+}
 
 void mostrar(String msg, int offset = 0) {
   lcd.clear();
@@ -150,7 +162,7 @@ void loop()
         lcd.setCursor(strlen("Bloqueado: ") + 2, 0);
         lcd.print(i);
         lcd.print(" "); // HACK para limpiar un cuadrado
-        delay(1000);
+        respirarLedRojo();
       }
       intentos = 0;
     }

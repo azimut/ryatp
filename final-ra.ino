@@ -107,7 +107,7 @@ bool pulsadorDeCerrado() {
 void loop()
 {
   // ETAPA 1 - Despertar el sistema
-  float distancia = 9999;
+  float distancia = leerDistancia();
   while(distancia > 15) {
     mostrar("Acerca la mano", 1);
     apagarLedRojo();

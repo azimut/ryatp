@@ -3,14 +3,14 @@
 
 #define HOFFSET 6 /* offset horizontal en el lcd, para la combinacion */
 
-#define LROJ 3
+#define LROJ 5
 #define LVER 2
-#define SERVO 11
+#define SERVO 9
 #define TRIG 7
-#define ECHO 6
+#define ECHO 8
 #define POTE A0
-#define PUL1 10
-#define PUL2 9
+#define PUL1 12
+#define PUL2 13
 
 Servo servo;
 LiquidCrystal_I2C lcd(0x20, 16, 2);

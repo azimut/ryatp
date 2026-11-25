@@ -1,18 +1,16 @@
-# TP Arduino Caja Fuerte Electronica
+# TP Final: Caja Fuerte Electronica
 
-TP Final del curso de **Robotica y Automatizacion 2026**. Dictado en el CFL 403 por Eliam Chociananovicz.
+Para el curso de **Robotica y Automatizacion 2026 2C**. Dictado en el CFL 403 por Eliam Chociananovicz.
 
 ## Descripcion
 
-El trabajo práctico consistia en desarrollar una caja fuerte electrónica utilizando Arduino, integrando distintos componentes electrónicos para controlar su funcionamiento. Elegi el desafio extra de poder cambiar la combinacion una vez abierta.
+El trabajo consistia en desarrollar una caja fuerte electrónica utilizando Arduino, integrando distintos componentes electrónicos para controlar su funcionamiento. Elegi el desafio extra de implementar la funcionalidad de poder cambiar la combinacion una vez abierta.
 
 ## Circuito en Tinkercad
 
 ![Circuito en Tinkercad](./circuit.png)
 
 ## Arduino Pinout
-
-Respeta el pinout recomendado en el PDF.
 
 | Componente      | Pin |
 |-----------------|-----|
@@ -35,8 +33,7 @@ Me resulto dificil diferenciar las etapas que no necesariamente ocurrian en orde
 
 ### ¿Para que usaste cada lista?
 
-La lista `codigo` almacena la combinacion por defecto (3719).
-La lista `ingreso` almacena el input provisto por el usuario.
+La lista `codigo` almacena la combinacion por defecto (3719). La lista `ingreso` almacena el input provisto por el usuario.
 
 ### ¿Que casos probaste para asegurarte de que la caja fuerte no se abra con una combinacion incorrecta?
 

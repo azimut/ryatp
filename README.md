@@ -6,6 +6,23 @@ TP Final del curso de **Robotica y Automatizacion 2026**. Dictado en el CFL 403 
 
 ![Circuito en Tinkercad](./circuit.png)
 
+## Arduino Pinout
+
+Respeta el pinout recomendado en el PDF.
+
+| Componente      | Pin |
+|-----------------|-----|
+| Led Rojo        | 5   |
+| Led Verde       | 2   |
+| Servo           | 9   |
+| HC-SR04 Trigger | 7   |
+| HC-SR04 Echo    | 8   |
+| Potenciometro   | A0  |
+| Pulsador 1      | 12  |
+| Pulsador 2      | 13  |
+| LCD SDA         | A4  |
+| LCD SCL         | A5  |
+
 ## Preguntas y Respuestas
 
 ### ¿Que etapa te resulto mas dificil y por que?

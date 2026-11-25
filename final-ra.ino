@@ -133,18 +133,18 @@ void loop() {
 
   // ETAPA 2 - La perilla
   // ETAPA 3 - Ingresar la combinacion
-  for (int digito = 0; digito < 4; digito++) {
+  for (int idx = 0; idx < 4; idx++) {
     bool confirmado = false;
     while (!confirmado) {
       lcd.noBlink(); // evitar parpadear fuera del digito
-      lcd.setCursor(HOFFSET + digito, 1);
+      lcd.setCursor(HOFFSET + idx, 1);
       lcd.print(leerDigito());
-      lcd.setCursor(HOFFSET + digito, 1);
+      lcd.setCursor(HOFFSET + idx, 1);
       lcd.blink();
       confirmado = pulsadorDeConfirmacion();
       while (pulsadorDeConfirmacion()) { } // hasta que se suelte
     }
-    ingreso[digito] = leerDigito();
+    ingreso[idx] = leerDigito();
     lcd.print("*");
   }
   lcd.noBlink();

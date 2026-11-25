@@ -2,6 +2,10 @@
 
 TP Final del curso de **Robotica y Automatizacion 2026**. Dictado en el CFL 403 por Eliam Chociananovicz.
 
+## Descripcion
+
+El trabajo práctico consiste en desarrollar una caja fuerte electrónica utilizando Arduino, integrando distintos componentes electrónicos para controlar su funcionamiento.
+
 ## Circuito en Tinkercad
 
 ![Circuito en Tinkercad](./circuit.png)

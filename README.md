@@ -8,6 +8,8 @@ El trabajo consistia en desarrollar una caja fuerte electrónica utilizando Ardu
 
 ## Circuito en Tinkercad
 
+[>>Link<<](https://www.tinkercad.com/things/cXdMEhU3R0q-tp-final-2011)
+
 ![Circuito en Tinkercad](./circuit.png)
 
 ## Arduino Pinout

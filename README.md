@@ -4,7 +4,7 @@ TP Final del curso de **Robotica y Automatizacion 2026**. Dictado en el CFL 403 
 
 ## Descripcion
 
-El trabajo práctico consiste en desarrollar una caja fuerte electrónica utilizando Arduino, integrando distintos componentes electrónicos para controlar su funcionamiento.
+El trabajo práctico consistia en desarrollar una caja fuerte electrónica utilizando Arduino, integrando distintos componentes electrónicos para controlar su funcionamiento. Elegi el desafio extra de poder cambiar la combinacion una vez abierta.
 
 ## Circuito en Tinkercad
 
@@ -35,7 +35,7 @@ Me resulto dificil diferenciar las etapas que no necesariamente ocurrian en orde
 
 ### ¿Para que usaste cada lista?
 
-La lista `codigo` almacena la contraseña por defecto.
+La lista `codigo` almacena la combinacion por defecto (3719).
 La lista `ingreso` almacena el input provisto por el usuario.
 
 ### ¿Que casos probaste para asegurarte de que la caja fuerte no se abra con una combinacion incorrecta?
